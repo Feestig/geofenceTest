@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Ionic Blank
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <button ion-button block (click)="getCurrentLocation()">Current location</button>
+  <div>
+    <p>Lat: {{ lat }}</p>
+    <p>Lng: {{ lng }}</p>
+  </div>
+  <div>
+    <p>{{ msg }}</p>
+    <ul>
+      <li *ngFor="let item of geos">{{ item.id }}</li>
+    </ul>
+  </div>
+  <div>
+    <h2>Result:</h2>
+    <ul>
+      <li *ngFor="let item of result">{{ item.id }}</li>
+    </ul>
+  </div>
+</ion-content>
