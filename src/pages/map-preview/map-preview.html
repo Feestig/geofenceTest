@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Map Preview</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <agm-map [latitude]="mapInit.lat" [longitude]="mapInit.lng" [zoom]="mapInit.zoom">
+    <agm-marker *ngFor="let marker of markers" [latitude]="marker.lat" [longitude]="marker.lng">
+      <agm-info-window>
+        <h3>{{ marker.name }}</h3>
+        <p>Description here</p>
+        <p>Radius: {{ marker.radius }} meters</p>
+        <p>Notify user when <b>{{ marker.transitionType.description }}</b> POI radius</p>
+      </agm-info-window>
+    </agm-marker>
+    <agm-circle *ngFor="let circle of markers" [latitude]="circle.lat" [longitude]="circle.lng" [radius]="circle.radius" [fillColor]="circle.color" [fillOpacity]="0.3"></agm-circle>
+  </agm-map>
+</ion-content>

@@ -1,27 +1,74 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Ionic Blank
+      Geofence Mapping &amp; Testing
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <button ion-button block (click)="getCurrentLocation()">Current location</button>
-  <div>
-    <p>Lat: {{ lat }}</p>
-    <p>Lng: {{ lng }}</p>
+
+  <ion-segment [(ngModel)]="project">
+    <ion-segment-button value="mapping">
+      Mapping
+    </ion-segment-button>
+    <ion-segment-button value="testing">
+      Testing
+    </ion-segment-button>
+  </ion-segment>
+
+
+  <!-- Segments -->
+  <div [ngSwitch]="project">
+    <!-- Segment 1 -->
+    <div *ngSwitchCase="'mapping'">
+      <h3 margin-top>Add a point of interest</h3>
+      <div>
+        <ion-item>
+          <ion-label stacked>Please enter a name for the POI</ion-label>
+          <ion-input [(ngModel)]="poiName"></ion-input>
+        </ion-item>
+      </div>
+      <div>
+        <ion-label>Geofence radius</ion-label>
+        <ion-range [(ngModel)]="radius" min="10" max="500">
+          <ion-label range-left>10</ion-label>
+          <ion-label range-right>500</ion-label>
+        </ion-range>
+        <ion-label>{{ radius }} meters</ion-label>
+      </div>
+      <div>
+        <ion-item>
+        <ion-label stacked>Notify user when</ion-label>
+          <ion-select [(ngModel)]="selectedGeofenceTransitionType">
+            <ion-option *ngFor="let type of geofenceTransitionTypes" value="{{ type.type }}">{{ type.description }} POI radius</ion-option>
+          </ion-select>
+        </ion-item>
+      </div>
+      <div margin-top>
+        <button ion-button block (click)="getCurrentLocation()">Fetch Current location</button>
+      </div>
+      <div margin-top>
+        <button ion-button block>Add POI</button>
+      </div>
+    </div>
+    <!-- Segment 2 -->
+    <div *ngSwitchCase="'testing'">
+      <div>
+        <p>{{ msg }}</p>
+        <ul>
+          <li *ngFor="let item of geos">{{ item.id }}</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Result:</h2>
+        <ul>
+          <li *ngFor="let item of result">{{ item.id }}</li>
+        </ul>
+      </div>
+    </div>
   </div>
-  <div>
-    <p>{{ msg }}</p>
-    <ul>
-      <li *ngFor="let item of geos">{{ item.id }}</li>
-    </ul>
-  </div>
-  <div>
-    <h2>Result:</h2>
-    <ul>
-      <li *ngFor="let item of result">{{ item.id }}</li>
-    </ul>
+  <div margin-top>
+    <button ion-button block (click)="previewOnMap()">Preview on map</button>
   </div>
 </ion-content>

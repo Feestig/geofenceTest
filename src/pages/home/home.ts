@@ -10,12 +10,29 @@ import { Geolocation } from '@ionic-native/geolocation';
 })
 export class HomePage {
 
+  /* Segment Switch */
+  project: string = 'mapping';
+
+  /* POI form */
+  poiName: string;
+  geofenceTransitionTypes: any[] = [ { type: 1, description: "entering" }, { type: 2, description: "leaving" } ];
+  selectedGeofenceTransitionType: any;
+
+  /* Current location */
   lat: number;
   lng: number;
+
+  /* Range */
+  radius: number = 100;
+
+  /* Geofences */
   msg: string;
   result: string;
 
   geos: any = [];
+
+  /* Google Maps */
+  markers: any[] = [];
 
   constructor(public navCtrl: NavController, private _geofence: Geofence, private _geolocation: Geolocation, public platform: Platform, public events: Events) {
   }
@@ -46,17 +63,23 @@ export class HomePage {
     this._geolocation.getCurrentPosition({ enableHighAccuracy: true }).then((resp) => {
      // resp.coords.latitude
      // resp.coords.longitude
+     // console.log(resp)
      this.lat = resp.coords.latitude
      this.lng = resp.coords.longitude
 
-     let watch = this._geolocation.watchPosition();
-      watch.subscribe((data) => {
-       // data can be a set of coordinates, or an error (if an error occurred).
-       this.lat = data.coords.latitude
-       this.lng = data.coords.longitude
-      });
+    this.geofenceTransitionTypes.filter((c) => c.type == this.selectedGeofenceTransitionType)
 
-     this.addGeofence()
+    this.markers.push({ lat: this.lat, lng: this.lng, radius: this.radius, color: this.generateRandomColor(), name: this.poiName, transitionType: this.selectedGeofenceTransitionType })
+    console.log(this.markers)
+
+     // let watch = this._geolocation.watchPosition();
+     //  watch.subscribe((data) => {
+     //   // data can be a set of coordinates, or an error (if an error occurred).
+     //   this.lat = data.coords.latitude
+     //   this.lng = data.coords.longitude
+     //  });
+
+     // this.addGeofence() // move to testing section
 
    }).catch((error) => {
      this.msg = 'Error getting location';
@@ -70,7 +93,7 @@ export class HomePage {
         id: 'Leave', //any unique ID
         latitude:       this.lat, //center of geofence radius
         longitude:      this.lng,
-        radius:         15, //radius to edge of geofence in meters. Try increase the radius, 3 meters is not enough to catch any transition, try with 100 instead.
+        radius:         20, //radius to edge of geofence in meters. Try increase the radius, 3 meters is not enough to catch any transition, try with 100 instead.
         transitionType: 2, //see 'Transition Types' below
         notification: { //notification settings
             id:             2, //any unique ID
@@ -80,23 +103,10 @@ export class HomePage {
         }
       },
       {
-        id: 'Both', //any unique ID
-        latitude:       this.lat, //center of geofence radius
-        longitude:      this.lng,
-        radius:         20, //radius to edge of geofence in meters. Try increase the radius, 3 meters is not enough to catch any transition, try with 100 instead.
-        transitionType: 3, //see 'Transition Types' below
-        notification: { //notification settings
-            id:             2, //any unique ID
-            title:          'You crossed a fence', //notification title
-            text:           'You just left or entered CoLab.', //notification body
-            openAppOnClick: true //open app when notification is tapped
-        }
-      },
-      {
         id: 'Enter', //any unique ID
         latitude:       this.lat, //center of geofence radius
         longitude:      this.lng,
-        radius:         10, //radius to edge of geofence in meters. Try increase the radius, 3 meters is not enough to catch any transition, try with 100 instead.
+        radius:         25, //radius to edge of geofence in meters. Try increase the radius, 3 meters is not enough to catch any transition, try with 100 instead.
         transitionType: 1, //see 'Transition Types' below
         notification: { //notification settings
             id:             2, //any unique ID
@@ -129,5 +139,14 @@ export class HomePage {
       },
       (err) => this.msg = err
       )
+  }
+
+  previewOnMap(): void {
+    // Show modal? page with map
+    this.navCtrl.push('page-map-preview', this.markers)
+  }
+
+  private generateRandomColor(): string {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16)
   }
 }
