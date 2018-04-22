@@ -63,7 +63,7 @@ export class HomePage {
     this._geolocation.getCurrentPosition({ enableHighAccuracy: true }).then((resp) => {
      // resp.coords.latitude
      // resp.coords.longitude
-     // console.log(resp)
+     console.log(resp)
      this.lat = resp.coords.latitude
      this.lng = resp.coords.longitude
 
@@ -82,6 +82,9 @@ export class HomePage {
      // this.addGeofence() // move to testing section
 
    }).catch((error) => {
+     for (let i in error) {
+       console.error(error[i])
+     }
      this.msg = 'Error getting location';
    });
  }
